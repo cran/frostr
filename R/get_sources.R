@@ -1,0 +1,169 @@
+#' @title Get metadata for source entities defined in the Frost API
+#'
+#' @description \code{get_sources()} retrieves metadata about (data) source
+#' entities defined for use in the Frost API. The function requires an
+#' input for \code{client_id}. The other function arguments are optional, and
+#' default to \code{NULL}, which means that the response from the API is not
+#' filtered on these parameters.
+#'
+#' NB: At the time of writing (2019-06-08), the Frost API "sources" resource
+#' only returns country names in Norwegian.
+#'
+#' @usage
+#' get_sources(client_id,
+#'             ids = NULL,
+#'             types = NULL,
+#'             geometry = NULL,
+#'             nearest_max_count = NULL,
+#'             valid_time = NULL,
+#'             name = NULL,
+#'             country = NULL,
+#'             county = NULL,
+#'             municipality = NULL,
+#'             wmo_id = NULL,
+#'             station_holder = NULL,
+#'             external_ids = NULL,
+#'             icao_code = NULL,
+#'             ship_code = NULL,
+#'             wigos_id = NULL,
+#'             fields = NULL,
+#'             return_response = FALSE)
+#'
+#' @param client_id A string. The client ID to use to send requests to the
+#' Frost API.
+#'
+#' @param ids A character vector. The Frost API source ID(s) that you want
+#' metadata for.
+#'
+#' @param types A string. The type of Frost API source that you want
+#' metadata for. Must be set to either "SensorSystem", "InterpolatedDataset",
+#' or "RegionDataset". Defaults to \code{NULL}, which returns all three types.
+#'
+#' @param geometry A string. Get Frost API sources defined by a specified
+#' geometry. Geometries are specified as either "nearest(POINT(...))" or
+#' "POLYGON(...)" using well-known text representation for geometry (WKT).
+#'
+#' @param nearest_max_count A string. The maximum number of sources returned
+#' when using "nearest(POINT(...))" for the \code{geometry} argument. Defaults
+#' to 1.
+#'
+#' @param valid_time A string. The time interval for which the sources have
+#' been, or still are, valid (or applicable). Specify as "<date>/<date>" or
+#' "<date>/now" where <date> is a date in the ISO-8601 format (YYYY-MM-DD).
+#' Defaults to "now" if not specified, which returns only currently valid
+#' sources.
+#'
+#' @param name A string. The data source name to get metadata for.
+#'
+#' @param country A string. The country name or country code to get metadata
+#' for.
+#'
+#' @param county A string. The county name or county ID to get metadata for.
+#'
+#' @param municipality A string. The municipality to get metadata for.
+#'
+#' @param wmo_id A string. The WMO ID to get metadata for.
+#'
+#' @param station_holder A string. The station holder name to get metadata
+#' for.
+#'
+#' @param external_ids A character vector. The external ID to get metadata
+#' for.
+#'
+#' @param icao_code A string. The ICAO code to get metadata for.
+#'
+#' @param ship_code A string. The ship code to get metadata for.
+#'
+#' @param wigos_id A string. The WIGOS ID to get metadata for.
+#'
+#' @param fields A character vector. Fields to include in the response (i.e.
+#' output). If this parameter is specified, then only these fields are
+#' returned in the response. If not specified, then all fields will be
+#' returned in the response.
+#'
+#' @param return_response A logical. If set to \code{TRUE}, then the function
+#' returns the response from the GET request. If set to \code{FALSE} (default),
+#' then the function returns a tibble (data frame) of the content in the
+#' response.
+#'
+#' @return The function returns either a data frame with metadata about source
+#' entities, or the response of the GET request, depending on the boolean value
+#' set for \code{return_response}.
+#'
+#' @examples
+#' \donttest{
+#' client.id <- "<YOUR CLIENT ID>"
+#'
+#' # Get data for all sources
+#' sources <- get_sources(client_id = client.id)
+#'
+#' # Get data for sources in Norway
+#' sources.norway <- get_sources(client.id = client.id,
+#'                               country = "NO")
+#' }
+#'
+#' @export get_sources
+
+get_sources <-
+  function(
+    client_id,
+    ids = NULL,
+    types = NULL,
+    geometry = NULL,
+    nearest_max_count = NULL,
+    valid_time = NULL,
+    name = NULL,
+    country = NULL,
+    county = NULL,
+    municipality = NULL,
+    wmo_id = NULL,
+    station_holder = NULL,
+    external_ids = NULL,
+    icao_code = NULL,
+    ship_code = NULL,
+    wigos_id = NULL,
+    fields = NULL,
+    return_response = FALSE
+  ) {
+
+    input_args <-
+      list(
+        ids             = frost_csl(ids),
+        types           = types,
+        geometry        = geometry,
+        nearestmaxcount = nearest_max_count,
+        validtime       = valid_time,
+        name            = name,
+        country         = country,
+        county          = county,
+        municipality    = municipality,
+        wmoid           = wmo_id,
+        stationholder   = station_holder,
+        externalids     = frost_csl(external_ids),
+        icaocode        = icao_code,
+        shipcode        = ship_code,
+        wigosid         = wigos_id,
+        fields          = frost_csl(fields)
+      )
+
+    frost_control_args(input_args = input_args, func = "get_sources")
+
+    url <-
+      paste0("https://", client_id, "@frost.met.no/sources/v0.jsonld",
+             collapse = NULL)
+
+    frostr_ua <- httr::user_agent("https://github.com/PersianCatsLikeToMeow/frostr")
+
+    r <- httr::GET(url, query = input_args, frostr_ua)
+
+    httr::stop_for_status(r)
+    frost_stop_for_type(r)
+
+    if (return_response) return(r)
+
+    r_content <- httr::content(r, as = "text", encoding = "UTF-8")
+    r_json <- jsonlite::fromJSON(r_content, flatten = TRUE)
+
+    r_data <- tibble::as_tibble(r_json[["data"]])
+
+  }

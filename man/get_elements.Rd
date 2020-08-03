@@ -99,11 +99,11 @@ default to \code{NULL}, which means that the response from the API is not
 filtered on these parameters.
 }
 \examples{
-\donttest{
-client.id <- "<YOUR CLIENT ID>"
+\dontrun{
+frost_client_id <- "<YOUR FROST CLIENT ID>"
 
 # Get data for all elements
-elements.df <- get_elements(client_id = client.id)
+elements_df <- get_elements(client_id = frost_client_id)
 }
 
 }

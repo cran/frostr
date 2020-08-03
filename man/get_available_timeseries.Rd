@@ -84,15 +84,15 @@ and default to \code{NULL}, which means that the response from the API is not
 filtered on these parameters.
 }
 \examples{
-\donttest{
-client.id <- "<YOUR CLIENT ID>"
+\dontrun{
+frost_client_id <- "<YOUR FROST CLIENT ID>"
 
 # Get metadata on available time series for Blindern station (with station
 # ID SN18700)
 sources <- "SN18700"
 
-obs.timeseries <- get_available_timeseries(client_id = client.id,
-                                           sources = sources)
+obs_available_ts <- get_available_timeseries(client_id = frost_client_id,
+                                             sources   = sources)
 }
 
 }

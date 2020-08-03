@@ -99,20 +99,20 @@ to \code{NULL}, which means that the response from the API is not
 filtered on these parameters.
 }
 \examples{
-\donttest{
-client.id <- "<YOUR CLIENT ID>"
+\dontrun{
+frost_client_id <- "<YOUR FROST CLIENT ID>"
 
 # Get daily data for temperature, rain, and wind speed for 2018
 sources <- "SN18700"
-reference.time <- "2018-01-01/2018-12-31"
+reference_time <- "2018-01-01/2018-12-31"
 elements <- c("mean(air_temperature P1D)",
               "sum(precipitation_amount P1D)",
               "mean(wind_speed P1D)")
 
-obs.df <- get_observations(client_id = client.id,
-                           sources = sources,
-                           reference_time = reference.time,
-                           elements = elements)
+observations_df <- get_observations(client_id      = frost_client_id,
+                                    sources        = sources,
+                                    reference_time = reference_time,
+                                    elements       = elements)
 }
 
 }

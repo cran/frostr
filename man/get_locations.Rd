@@ -44,11 +44,11 @@ default to \code{NULL}, which means that the response from the API is not
 filtered on these parameters.
 }
 \examples{
-\donttest{
-client.id <- "<YOUR CLIENT ID>"
+\dontrun{
+frost_client_id <- "<YOUR FROST CLIENT ID>"
 
 # Get all location names
-locations.df <- get_locations(client_id = client.id)
+locations_df <- get_locations(client_id = frost_client_id)
 }
 
 }

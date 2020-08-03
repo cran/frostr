@@ -97,15 +97,15 @@ NB: At the time of writing (2019-06-08), the Frost API "sources" resource
 only returns country names in Norwegian.
 }
 \examples{
-\donttest{
-client.id <- "<YOUR CLIENT ID>"
+\dontrun{
+frost_client_id <- "<YOUR FROST CLIENT ID>"
 
 # Get data for all sources
-sources <- get_sources(client_id = client.id)
+sources <- get_sources(client_id = frost_client_id)
 
 # Get data for sources in Norway
-sources.norway <- get_sources(client.id = client.id,
-                              country = "NO")
+sources_norway <- get_sources(client_id = frost_client_id,
+                              country   = "NO")
 }
 
 }

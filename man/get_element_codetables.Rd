@@ -44,11 +44,11 @@ function arguments are optional, and default to \code{NULL}, which means
 that the response from the API is not filtered on these parameters.
 }
 \examples{
-\donttest{
-client.id <- "<YOUR CLIENT ID>"
+\dontrun{
+frost_client_id <- "<YOUR FROST CLIENT ID>"
 
 # Get the full code table
-code.tables <- get_element_codetables(client_id = client.id)
+code_tables <- get_element_codetables(client_id = frost_client_id)
 }
 
 }
